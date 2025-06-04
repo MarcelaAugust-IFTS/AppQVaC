@@ -16,7 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from QVaC import views #de la carpeta QVaC importa las vistas (esta carpeta se crea cuando se inicializa la app)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("", views.index, name ="index"),#Agrego la ruta del index (se pone solo comillas) y defino la función index que estará en el archivo views.py
 ]
