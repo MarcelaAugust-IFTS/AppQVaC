@@ -22,4 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls), # Ruta al panel de administración de Django
     path("", views.index, name = "index"), # Agrego la ruta del index (se pone solo comillas) y defino la función index que estará en el archivo views.py
     path("login/", views.vista_login, name="login"), # Ruta para la vista de login
+    path("registro/", views.registro, name = "registro") #Ruta para la vista de registro
 ]
