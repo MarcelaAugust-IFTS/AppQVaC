@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es-ar"><!--indica que la página se presenta en español adaptado para Argentina-->
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!--Por si alguien usa Explorer: pide que use la versión más reciente del motor de renderizado disponible para mostrar la página-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loguearme</title>
+    <link rel="stylesheet" href="styleLogin.css">
+</head>
+<body>
+    <header class="header"><!--Encabezado de la pagina-->
+        <div class="logo">
+            <img src="../Imagenes/logo de prueba.png" alt="Logo de la app Que vamos a comer">
+        </div>
+        <nav>
+            <!--aca se agrega los enlaces a diferentes secciones de web-->
+            <ul class="nav-links">
+                <li><a href="/QVaC/index.html">Inicio</a></li>
+                <li><a href="Contactos.html">Contacto</a></li>
+                <li><a href="NuestraEmpresa.html">Nuestra Empresa</a></li>
+                <li><a href="Registrar.html">Registrarme</a></li>                                 
+            </ul>
+        </nav>
+    </header>
+
+    <section class="FormularioDeLogin">
+    <h5>Logearme</h5>
+
+    <!-- Campos del usuario y contraseña -->
+    <input class="controls" type="text" id="usuario" placeholder="Usuario">
+    <input class="controls" type="password" id="contraseña" placeholder="Contraseña">
+
+    <!-- Botón para enviar -->
+    <input class="buttons" type="button" value="Ingresar" onclick="enviarLogin()">
+
+    <p><a href="#">¿Olvidaste tu Contraseña?</a></p>
+    </section>
+    <script>
+    function enviarLogin() {
+        const usuario = document.getElementById('usuario').value;
+        const contraseña = document.getElementById('contraseña').value;
+
+        fetch('/login/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')  // Requiere CSRF token para Django
+            },
+            body: JSON.stringify({
+                usuario: usuario,
+                contraseña: contraseña
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                window.location.href = '/home/';  // Cambia por la ruta a la que quieras redirigir
+            } else {
+                alert('Usuario o contraseña incorrectos.');
+            }
+        });
+    }
+
+    // Función para obtener CSRF token desde cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // ¿Empieza con "name="?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    </script>
+</body>
+</html>

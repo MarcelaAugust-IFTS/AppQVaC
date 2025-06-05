@@ -21,4 +21,5 @@ from QVaC import views #de la carpeta QVaC importa las vistas (esta carpeta se c
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", views.index, name ="index"),#Agrego la ruta del index (se pone solo comillas) y defino la función index que estará en el archivo views.py
+    path("login/",views.login,name="login"),
 ]
