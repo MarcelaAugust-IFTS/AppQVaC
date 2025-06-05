@@ -1,81 +1,49 @@
-<!DOCTYPE html>
-<html lang="es-ar"><!--indica que la página se presenta en español adaptado para Argentina-->
+{% load static %}  <!-- Carga las etiquetas estáticas de Django para usar archivos como CSS o imágenes -->
+
+<!DOCTYPE html> <!-- Define el tipo de documento como HTML5 -->
+<html lang="es-ar"> <!-- Indica que el idioma de la página es español de Argentina -->
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!--Por si alguien usa Explorer: pide que use la versión más reciente del motor de renderizado disponible para mostrar la página-->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loguearme</title>
-    <link rel="stylesheet" href="styleLogin.css">
+    <meta charset="UTF-8"> <!-- Codificación de caracteres en UTF-8 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- Para que Internet Explorer use la última versión del motor de renderizado -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Para que la página sea responsive en móviles -->
+    <title>Loguearme</title> <!-- Título que aparece en la pestaña del navegador -->
+
+    <link rel="stylesheet" href="{% static 'styleLogin.css' %}"> <!-- Carga el archivo CSS desde la carpeta static -->
 </head>
 <body>
-    <header class="header"><!--Encabezado de la pagina-->
-        <div class="logo">
-            <img src="../Imagenes/logo de prueba.png" alt="Logo de la app Que vamos a comer">
+
+    <header class="header"> <!-- Encabezado del sitio -->
+        <div class="logo"> <!-- Contenedor del logo -->
+            <img src="{% static 'imagenes/logo de prueba.png' %}" alt="Logo de la app Que vamos a comer"> <!-- Imagen del logo -->
         </div>
-        <nav>
-            <!--aca se agrega los enlaces a diferentes secciones de web-->
-            <ul class="nav-links">
-                <li><a href="/QVaC/index.html">Inicio</a></li>
-                <li><a href="Contactos.html">Contacto</a></li>
-                <li><a href="NuestraEmpresa.html">Nuestra Empresa</a></li>
-                <li><a href="Registrar.html">Registrarme</a></li>                                 
+        <nav> <!-- Menú de navegación -->
+            <ul class="nav-links"> <!-- Lista de enlaces -->
+                <li><a href="/">Inicio</a></li> <!-- Enlace a la página de inicio -->
+                <li><a href="/contacto/">Contacto</a></li> <!-- Enlace a la sección de contacto -->
+                <li><a href="/nuestra-empresa/">Nuestra Empresa</a></li> <!-- Enlace a la sección de empresa -->
+                <li><a href="/registrar/">Registrarme</a></li> <!-- Enlace para registrarse -->
             </ul>
         </nav>
     </header>
 
-    <section class="FormularioDeLogin">
-    <h5>Logearme</h5>
+    <section class="FormularioDeLogin"> <!-- Sección principal con el formulario -->
+        <h5>Logearme</h5> <!-- Título del formulario -->
 
-    <!-- Campos del usuario y contraseña -->
-    <input class="controls" type="text" id="usuario" placeholder="Usuario">
-    <input class="controls" type="password" id="contraseña" placeholder="Contraseña">
+        {% if error %} <!-- Si hay un mensaje de error pasado desde la vista, lo mostramos -->
+            <p style="color:red;">{{ error }}</p> <!-- Muestra el mensaje de error en rojo -->
+        {% endif %}
 
-    <!-- Botón para enviar -->
-    <input class="buttons" type="button" value="Ingresar" onclick="enviarLogin()">
+        <form method="POST" action="/login/"> <!-- Formulario que se envía por POST a la vista /login/ -->
+            {% csrf_token %} <!-- Token de seguridad para evitar ataques CSRF -->
 
-    <p><a href="#">¿Olvidaste tu Contraseña?</a></p>
+            <input class="controls" type="text" name="usuario" placeholder="Usuario" required> <!-- Campo para el nombre de usuario -->
+            <input class="controls" type="password" name="contraseña" placeholder="Contraseña" required> <!-- Campo para la contraseña -->
+
+            <button type="submit">Ingresar</button> <!-- Botón para enviar el formulario -->
+        </form>
+
+        <p><a href="#">¿Olvidaste tu Contraseña?</a></p> <!-- Enlace para recuperar la contraseña (no implementado) -->
     </section>
-    <script>
-    function enviarLogin() {
-        const usuario = document.getElementById('usuario').value;
-        const contraseña = document.getElementById('contraseña').value;
 
-        fetch('/login/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')  // Requiere CSRF token para Django
-            },
-            body: JSON.stringify({
-                usuario: usuario,
-                contraseña: contraseña
-            })
-        })
-        .then(response => {
-            if (response.ok) {
-                window.location.href = '/home/';  // Cambia por la ruta a la que quieras redirigir
-            } else {
-                alert('Usuario o contraseña incorrectos.');
-            }
-        });
-    }
-
-    // Función para obtener CSRF token desde cookies
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                // ¿Empieza con "name="?
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-    </script>
 </body>
 </html>

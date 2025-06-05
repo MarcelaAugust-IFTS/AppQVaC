@@ -26,18 +26,20 @@ def index (request):
 
     return render(request, 'login.html')  # Asegúrate de que el archivo se llame login.html'''
 
-@csrf_exempt  # Úsalo si no estás manejando el CSRF token desde el frontend aún
-def login(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        username = data.get('usuario')
-        password = data.get('contraseña')
+#No usar login porque es una función definida en Django (la importamos con django.contrib.auth.login)
+def vista_login(request):
+    if request.method == 'GET':
+        return render(request, 'login.html')  #Esto muestra la página login como HTML porque el método POST de la función login maneja una API que responde a un POST con JSON (para autenticación). Recordar que el profe renderiza paginas con formularios que los pasa como diccionarios.
+
+    elif request.method == 'POST':
+        username = request.POST.get('usuario')
+        password = request.POST.get('contraseña')
 
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return JsonResponse({'mensaje': 'Autenticado correctamente'})
+            return render(request, 'index.html')  
         else:
-            return JsonResponse({'error': 'Credenciales incorrectas'}, status=401)
+            return render(request, 'login.html', {'error': 'Usuario o contraseña incorrectos.'})
 
     return JsonResponse({'error': 'Método no permitido'}, status=405)
